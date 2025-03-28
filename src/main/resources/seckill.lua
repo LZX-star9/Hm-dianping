@@ -5,6 +5,7 @@
 ---
 local voucher_id = ARGV[1]
 local user_id = ARGV[2]
+local order_id = ARGV[3]
 
 -- 数据key
 local stock_key = 'seckill:stock:' .. voucher_id
@@ -22,4 +23,5 @@ end
 
 redis.call("incrby", stock_key, -1)
 redis.call("sadd", order_key, user_id)
+redis.call("xadd", "stream.orders", "*", "userId", user_id, "voucherId", voucher_id, "id", order_id)
 return 0
